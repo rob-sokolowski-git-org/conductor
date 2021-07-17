@@ -1,0 +1,16 @@
+version: "3.3"
+
+services:
+
+  bash:
+    image: conductor:latest
+    volumes:
+      - ./:/code
+    working_dir: /code
+    command: bash
+
+networks:
+  conductor:
+    driver: bridge
+    ipam:
+      driver: default
