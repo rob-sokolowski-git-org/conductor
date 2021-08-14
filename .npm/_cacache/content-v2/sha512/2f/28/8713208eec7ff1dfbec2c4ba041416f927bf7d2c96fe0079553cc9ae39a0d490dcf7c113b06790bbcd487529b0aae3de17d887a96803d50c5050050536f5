@@ -1,0 +1,1 @@
+{"name":"pty","dist-tags":{"latest":"0.0.0"},"versions":{"0.0.0":{"name":"pty","version":"0.0.0","dependencies":{"pty.js":"*"},"dist":{"shasum":"3dfe0e3448b6c8280fd66641240b431f39ad4d92","tarball":"https://registry.npmjs.org/pty/-/pty-0.0.0.tgz"}}},"modified":"2014-05-09T12:45:13.469Z"}
