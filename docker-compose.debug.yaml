@@ -16,7 +16,6 @@ services:
       - conductor
     restart: unless-stopped
 
-
   conductor_api:
     image: conductor-api:latest
     container_name: conductor-api
@@ -30,13 +29,29 @@ services:
     command:
       python main.py
 
+  resolve_dependencies:
+    image: conductor-api:latest
+    volumes:
+      - ./:/home/appuser/code
+    working_dir: /home/appuser/code
+    networks:
+      - conductor
+    command: pip-compile -r ./requirements.direct
+  
+  bash:
+    image: conductor-api:latest
+    container_name: conductor-bash
+    networks:
+      - conductor
+    working_dir: /home/appuser/code
+    command: bash
+
 
 networks:
   conductor:
     driver: bridge
     ipam:
       driver: default
-
 
 volumes:
     postgres_data:
