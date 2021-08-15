@@ -3,6 +3,8 @@ import json
 import logging
 import sys
 import uvicorn
+import time
+import random
 
 from conductor.routes.setup import build_all_routers
 from fastapi import FastAPI, HTTPException
@@ -11,8 +13,12 @@ from typing import Optional
 
 
 app = FastAPI(title="conductor_api")
-
 app.include_router(router=build_all_routers())
+
+# set global random seed
+now_seed = int(time.time())
+random.seed(now_seed)
+logging.info(f"random seed set random system clock: {now_seed}")
 
 # Cors stuff: currently this is only needed for local demos that hit this from the browser
 origins = ["*"]

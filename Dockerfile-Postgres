@@ -1,0 +1,20 @@
+FROM postgres:9.6.23-stretch
+
+USER root
+RUN apt-get update
+RUN apt-get install -y \
+    curl \
+    gcc \
+    g++ \
+    libcurl4-gnutls-dev \
+    make \
+    postgresql-server-dev-9.6
+
+# A bit hacky, but this repo is cloned as a sub-repo: https://github.com/pramsey/pgsql-http
+# Copy our code in, we'll install http extensions this way
+RUN mkdir /root/build
+COPY ./ /root/build/
+
+# make install http extension
+WORKDIR /root/build/postgres-exentions/pgsql-http
+RUN make install

@@ -1,10 +1,11 @@
-import random
+import numpy as np
 
 from fastapi import APIRouter, Body, Depends, Path, Query
 
 
 def build_noise_router() -> APIRouter:
     router = APIRouter()
+
 
     @router.get("/ping")
     async def ping():
@@ -17,6 +18,6 @@ def build_noise_router() -> APIRouter:
             std_dev: float,
         ):
 
-        return random.random()
+        return np.random.normal(mean, std_dev, 1)[0]
 
     return router
