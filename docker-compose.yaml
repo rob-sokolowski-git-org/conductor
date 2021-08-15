@@ -16,19 +16,18 @@ services:
       - conductor
     restart: unless-stopped
 
-  api:
+  conductor_api:
     image: conductor-api:latest
     container_name: conductor-api
     networks:
       - conductor
     volumes:
       - ./:/home/appuser/code
-      - ~/.etc_rtr/data_sci:/etc/data_sci/:ro
     ports:
       - "8000:8000"
     working_dir: /home/appuser/code
     command:
-      python run_relevance.py
+      python main.py
 
   resolve_dependencies:
     image: conductor-api:latest
