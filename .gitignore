@@ -1,8 +1,4 @@
-# elm-package generated files
-elm-stuff
-# elm-repl generated files
-repl-temp-*
-
+.idea/
+.cache/
+.config/
 .npm/
-node_modules/
-.bash_history

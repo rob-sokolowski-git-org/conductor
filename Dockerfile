@@ -1,18 +1,32 @@
-FROM node:14.17.3
+FROM python:3.8-slim
 
-RUN apt-get -y update
+# NB: gcc and dev libs are required for installing data-science packages like scikit-learn
+USER root
+RUN apt-get update
+RUN apt-get install -y \
+    gcc \
+    curl \
+    python3-dev \
+    python3-pip \
+    libxml2-dev \
+    libxslt1-dev \
+    zlib1g-dev \
+    g++
 
-ENV DIRPATH /app
-ENV GROUP appuser_group
-ENV USER appuser
-WORKDIR $DIRPATH
+# Don't run rest as root
+RUN useradd -ms /bin/bash appuser
+USER appuser
+WORKDIR /code
 
-RUN addgroup $GROUP
-RUN useradd --create-home \
-            --no-log-init \
-            --gid $GROUP $USER \
-            --home-dir $DIRPATH
-RUN chown -R $USER:$GROUP $DIRPATH
-USER $USER
+RUN pip install --user --upgrade pip
+ENV PATH="${PATH}:/home/appuser/.local/bin"
+RUN pip install --user pip-tools
 
-CMD bash
+RUN mkdir /home/appuser/code
+RUN mkdir /home/appuser/install
+RUN mkdir /home/appuser/.secrets
+WORKDIR /home/appuser/install
+COPY ./requirements.txt ./requirements.txt
+RUN pip install --user -r ./requirements.txt
+
+WORKDIR /home/appuser/code

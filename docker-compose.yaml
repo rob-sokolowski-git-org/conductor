@@ -1,24 +1,50 @@
 version: "3.3"
 
 services:
-  bash:
-    image: conductor:latest
+  postgres_db:
+    container_name: postgres_db
+    image: postgres:9.6.23-stretch
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PGDATA: /data/postgres
     volumes:
-      - ./:/app
-    working_dir: /app
-    command: bash
-
-  server:
-    image: conductor:latest
+        - postgres_data:/data/postgres
     ports:
-      - 3000:3000
+      - 5432:5432
+    networks:
+      - conductor
+    restart: unless-stopped
+
+  api:
+    image: conductor-api:latest
+    container_name: conductor-api
+    networks:
+      - conductor
     volumes:
-      - ./:/app
-    working_dir: /app
-    command: node ./src/index.js
+      - ./:/home/appuser/code
+      - ~/.etc_rtr/data_sci:/etc/data_sci/:ro
+    ports:
+      - "8000:8000"
+    working_dir: /home/appuser/code
+    command:
+      python run_relevance.py
+
+  resolve_dependencies:
+    image: conductor-api:latest
+    volumes:
+      - ./:/home/appuser/code
+    working_dir: /home/appuser/code
+    networks:
+      - conductor
+    command: pip-compile -r ./requirements.direct
+
 
 networks:
   conductor:
     driver: bridge
     ipam:
       driver: default
+
+volumes:
+    postgres_data:
